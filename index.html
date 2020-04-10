@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PAYE Calculator</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+
+<body>
+    <section>
+        <div class="container pt-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>PAYE Calculator</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div x-data="data()">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 offset-md-4">
+                    <div class="form-group row">
+                        <label for="basic-pay" class="col-md-3">Basic Pay</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" x-ref="basicPay" x-model="basicPay" x-on:input="calcNet();">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="allowances" class="col-md-3">Allowances</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" x-ref="allowances" x-model="allowances" x-on:input="calcNet();">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p>Napsa</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p x-text="thousandSeparator(napsa)"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p>Tax</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p x-text="thousandSeparator(tax)"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p>Net Pay</p>
+                        </div>
+                        <div class="col-md-8">
+                            <p x-text="thousandSeparator(netPay)"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="js/alpine.js"></script>
+<script>
+function data() {
+    return {
+        basicPay: null,
+        allowances: '',
+        napsa: 0,
+        napsaCeiling: 1073.80,
+        statutoryContributions: 0,
+        totalContributions: 0,
+        taxableAmount: 0,
+        totalDeductions: 0,
+        tax: 0,
+        netPay: 0,
+        calcNapsa() {
+            this.napsa = 0.05 * (this.taxableAmount);
+            if (this.napsa >= this.napsaCeiling) {
+                this.napsa = this.napsaCeiling;
+            }
+            console.log(this.napsa);
+        },
+        calcTaxableAmount() {
+            let basicPay = this.basicPay === '' ? 0 : this.basicPay;
+            let allowances = this.allowances === '' ? 0 : this.allowances;
+            this.taxableAmount = parseFloat(basicPay) + parseFloat(allowances);
+            console.log(this.taxableAmount);
+        },
+        calcNet() {
+            this.calcTaxableAmount();
+            this.calcNapsa();
+            this.calcTax();
+            this.totalDeductions = this.napsa + this.tax;
+            this.netPay = this.taxableAmount - this.totalDeductions;
+        },
+        calcTax() {
+
+            this.tax = 0;
+            if (this.taxableAmount <= 3300) return;
+            let remaining = this.taxableAmount - 3300;
+            if (remaining > 800) {
+                remaining -= 800;
+                this.tax += (800 * 0.25);
+                if (remaining > 2100) {
+                    remaining -= 2100;
+                    this.tax += (2100 * 0.30);
+                    if (remaining > 0) {
+                        this.tax += (remaining * 0.375);
+                    }
+                } else {
+                    this.tax += remaining * 0.30;
+                }
+            } else {
+                this.tax = remaining * 0.25;
+            }
+        },
+        thousandSeparator(value) {
+            if (value !== null) {
+                return value.toFixed(2).toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+        }
+    }
+}
+</script>
+
+</html>

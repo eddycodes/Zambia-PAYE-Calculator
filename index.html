@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Zambian Salary and PAYE Calculator">
@@ -15,7 +15,7 @@
     <section>
         <div class="container pt-3">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-sm-12">
                     <h1>Salary and PAYE Calculator</h1>
                 </div>
             </div>
@@ -24,84 +24,84 @@
     <div x-data="data()">
         <div class="container pt-3">
             <div class="row">
-                <div class="col-md-8 offset-md-2">
+                <div class="col-sm-6">
                     <div class="form-group row">
-                        <label for="basic-pay" class="col-md-4">Basic Pay</label>
-                        <div class="col-md-8">
+                        <label for="basic-pay" class="col-sm-4">Basic Pay</label>
+                        <div class="col-sm-8">
                             <input type="number" class="form-control" x-ref="basicPay" x-model="basicPay" x-on:input="calcNet();">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="allowances" class="col-md-4">Allowances</label>
-                        <div class="col-md-8">
+                        <label for="allowances" class="col-sm-4">Allowances</label>
+                        <div class="col-sm-8">
                             <input type="number" class="form-control" x-ref="allowances" x-model="allowances" x-on:input="calcNet();">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="bonuses" class="col-md-4">Bonuses</label>
-                        <div class="col-md-8">
+                        <label for="bonuses" class="col-sm-4">Bonuses</label>
+                        <div class="col-sm-8">
                             <input type="number" class="form-control" x-ref="bonuses" x-model="bonuses" x-on:input="calcNet();">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="gratuity" class="col-md-4">Gratuity/Leave Pay</label>
-                        <div class="col-md-8">
+                        <label for="gratuity" class="col-sm-4">Gratuity/Leave Pay</label>
+                        <div class="col-sm-8">
                             <input type="number" class="form-control" x-ref="gratuity" x-model="gratuity" x-on:input="calcNet();">
                         </div>
                     </div>
-                      <div class="form-group row">
-                        <label for="gratuity" class="col-md-4">Loans and Advances</label>
-                        <div class="col-md-8">
+                    <div class="form-group row">
+                        <label for="gratuity" class="col-sm-4">Loans and Advances</label>
+                        <div class="col-sm-8">
                             <input type="number" class="form-control" x-ref="loans" x-model="loans" x-on:input="calcNet();">
                         </div>
                     </div>
-                    
+                </div>
+                <div class="col-sm-6">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-sm-4">
                             <p>Gross Pay</p>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-sm-8">
                             <p x-text="thousandSeparator(taxableAmount)"></p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-sm-4">
                             <p>Napsa</p>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-sm-8">
                             <p x-text="thousandSeparator(napsa)"></p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-sm-4">
                             <p>NHIS</p>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-sm-8">
                             <p x-text="thousandSeparator(nhis)"></p>
                         </div>
                     </div>
-                    
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-sm-4">
                             <p>Tax</p>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-sm-8">
                             <p x-text="thousandSeparator(tax)"></p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-sm-4">
                             <p>Total Deductions</p>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-sm-8">
                             <p x-text="thousandSeparator(totalDeductions)"></p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-sm-4">
                             <p>Net Pay</p>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-sm-8">
                             <p x-text="thousandSeparator(netPay)"></p>
                         </div>
                     </div>
@@ -143,7 +143,7 @@ function data() {
             this.taxableAmount = basicPay + allowances + bonuses + gratuity;
             console.log(this.taxableAmount);
         },
-        calcNHIS(){
+        calcNHIS() {
             let basicPay = this.basicPay === '' ? 0 : parseFloat(this.basicPay);
             this.nhis = basicPay * 0.01;
         },

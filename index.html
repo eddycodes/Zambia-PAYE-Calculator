@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,7 @@
     <title>Zambian Salaray and PAYE Calculator</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
+
 <body>
     <section>
         <div class="container pt-5">
@@ -105,12 +107,12 @@ function data() {
             let remaining = this.taxableAmount - 3300;
             if (remaining > 800) {
                 remaining -= 800;
-                this.tax += (800 * 0.25);
+                this.tax += 800 * 0.25;
                 if (remaining > 2100) {
                     remaining -= 2100;
-                    this.tax += (2100 * 0.30);
+                    this.tax += 2100 * 0.30;
                     if (remaining > 0) {
-                        this.tax += (remaining * 0.375);
+                        this.tax += remaining * 0.375;
                     }
                 } else {
                     this.tax += remaining * 0.30;
@@ -127,4 +129,5 @@ function data() {
     }
 }
 </script>
+
 </html>

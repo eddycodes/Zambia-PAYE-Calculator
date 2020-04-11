@@ -49,6 +49,12 @@
                             <input type="number" class="form-control" x-ref="gratuity" x-model="gratuity" x-on:input="calcNet();">
                         </div>
                     </div>
+                      <div class="form-group row">
+                        <label for="gratuity" class="col-md-4">Loans and Advances</label>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" x-ref="loans" x-model="loans" x-on:input="calcNet();">
+                        </div>
+                    </div>
                     
                     <div class="row">
                         <div class="col-md-4">
@@ -112,6 +118,7 @@ function data() {
         allowances: '',
         bonuses: '',
         gratuity: '',
+        loans: '',
         napsa: 0,
         nhis: 0,
         napsaCeiling: 1149.60,
@@ -145,7 +152,8 @@ function data() {
             this.calcNapsa();
             this.calcNHIS();
             this.calcTax();
-            this.totalDeductions = this.napsa + this.tax + this.nhis;
+            let loans = this.loans === '' ? 0 : parseFloat(this.loans);
+            this.totalDeductions = this.napsa + this.tax + this.nhis + loans;
             this.netPay = this.taxableAmount - this.totalDeductions;
         },
         calcTax() {

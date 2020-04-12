@@ -121,22 +121,19 @@ function data() {
         loans: '',
         napsa: 0,
         nhis: 0,
-        napsaCeiling: 1149.60,
         statutoryContributions: 0,
         totalContributions: 0,
         taxableAmount: 0,
         totalDeductions: 0,
         tax: 0,
         netPay: 0,
-        calcNapsa(taxableAmount,napsaCeiling) {
+        calcNapsa(taxableAmount) {
+            const napsaCeiling = 1149.60;
             let napsa = 0.05 * (taxableAmount);
             if (napsa >= napsaCeiling) {
                 napsa = napsaCeiling;
             }
             return napsa;
-        },
-        calcTaxableAmount(...args) {
-            return args.reduce((totalSum,currentValue) => totalSum + currentValue );
         },
         calcNHIS(basicPay) {
             let nhis = basicPay * 0.01;
@@ -148,11 +145,11 @@ function data() {
             let bonuses = this.bonuses === '' ? 0 : parseFloat(this.bonuses);
             let gratuity = this.gratuity === '' ? 0 : parseFloat(this.gratuity);
             let loans = this.loans === '' ? 0 : parseFloat(this.loans);
-            this.taxableAmount = this.calcTaxableAmount(basicPay,allowances,bonuses,gratuity);
-            this.napsa = this.calcNapsa(this.taxableAmount,this.napsaCeiling);
+            this.taxableAmount = this.sum(basicPay,allowances,bonuses,gratuity);
+            this.napsa = this.calcNapsa(this.taxableAmount);
             this.nhis = this.calcNHIS(basicPay);
             this.tax = this.calcTax(this.taxableAmount);
-            this.totalDeductions = this.napsa + this.tax + this.nhis + loans;
+            this.totalDeductions = this.sum(this.napsa,this.tax,this.nhis,loans);
             this.netPay = this.taxableAmount - this.totalDeductions;
         },
         calcTax(taxableAmount) {
@@ -175,6 +172,9 @@ function data() {
                 tax = remaining * 0.25;
             }
             return tax;
+        },
+        sum(...args) {
+            return args.reduce((totalSum,currentValue) => totalSum + currentValue );
         },
         thousandSeparator(value) {
             if (value !== null) {

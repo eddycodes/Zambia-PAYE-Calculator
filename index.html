@@ -28,31 +28,31 @@
                     <div class="form-group row">
                         <label for="basic-pay" class="col-sm-4">Basic Pay</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="basicPay" v-model="basicPay" v-on:input="calcNet();">
+                            <input type="number" class="form-control" ref="basicPay" v-model="basicPay">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="allowances" class="col-sm-4">Allowances</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="allowances" v-model="allowances" v-on:input="calcNet();">
+                            <input type="number" class="form-control" ref="allowances" v-model="allowances">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="bonuses" class="col-sm-4">Bonuses</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="bonuses" v-model="bonuses" v-on:input="calcNet();">
+                            <input type="number" class="form-control" ref="bonuses" v-model="bonuses">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="gratuity" class="col-sm-4">Gratuity/Leave Pay</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="gratuity" v-model="gratuity" v-on:input="calcNet();">
+                            <input type="number" class="form-control" ref="gratuity" v-model="gratuity">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="gratuity" class="col-sm-4">Loans and Advances</label>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="loans" v-model="loans" v-on:input="calcNet();">
+                            <input type="number" class="form-control" ref="loans" v-model="loans">
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                             <p>Gross Pay</p>
                         </div>
                         <div class="col-sm-8">
-                            <p>{{ taxableAmount | thousandSeparator }}</p>
+                            <p>{{ grossPay | thousandSeparator }}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -119,49 +119,33 @@ new Vue({
         allowances: '',
         bonuses: '',
         gratuity: '',
-        loans: '',
-        napsa: 0,
-        nhis: 0,
-        statutoryContributions: 0,
-        totalContributions: 0,
-        taxableAmount: 0,
-        totalDeductions: 0,
-        tax: 0,
-        netPay: 0
+        loans: ''
     },
-    mounted() {
-
-    },
-    methods: {
-        calcNapsa(taxableAmount) {
+    computed: {
+        grossPay() {
+            return [this.basicPay, this.allowances, this.bonuses, this.gratuity].map((value) => {
+                    return value = value == '' ? 0 : parseFloat(value);
+                })
+                .reduce((totalSum, currentValue) => {
+                    return totalSum + currentValue;
+                });
+        },
+        napsa() {
             const napsaCeiling = 1149.60;
-            let napsa = 0.05 * (taxableAmount);
+            let napsa = 0.05 * (this.grossPay);
             if (napsa >= napsaCeiling) {
                 napsa = napsaCeiling;
             }
             return napsa;
         },
-        calcNHIS(basicPay) {
-            let nhis = basicPay * 0.01;
-            return nhis;
-        },
-        calcNet() {;
+        nhis() {
             let basicPay = this.basicPay === '' ? 0 : parseFloat(this.basicPay);
-            let allowances = this.allowances === '' ? 0 : parseFloat(this.allowances);
-            let bonuses = this.bonuses === '' ? 0 : parseFloat(this.bonuses);
-            let gratuity = this.gratuity === '' ? 0 : parseFloat(this.gratuity);
-            let loans = this.loans === '' ? 0 : parseFloat(this.loans);
-            this.taxableAmount = this.sum(basicPay, allowances, bonuses, gratuity);
-            this.napsa = this.calcNapsa(this.taxableAmount);
-            this.nhis = this.calcNHIS(basicPay);
-            this.tax = this.calcTax(this.taxableAmount);
-            this.totalDeductions = this.sum(this.napsa, this.tax, this.nhis, loans);
-            this.netPay = this.taxableAmount - this.totalDeductions;
+            return basicPay * 0.01;
         },
-        calcTax(taxableAmount) {
+        tax() {
             let tax = 0;
-            if (taxableAmount <= 3300) return tax;
-            let remaining = taxableAmount - 3300;
+            if (this.grossPay <= 3300) return tax;
+            let remaining = this.grossPay - 3300;
             if (remaining > 800) {
                 remaining -= 800;
                 tax += 800 * 0.25;
@@ -179,11 +163,17 @@ new Vue({
             }
             return tax;
         },
-        sum(...args) {
-            return args.reduce((totalSum, currentValue) => totalSum + currentValue);
+        totalDeductions() {
+            return [this.napsa, this.tax, this.nhis, this.loans].map((value) => {
+                    return value = value == '' ? 0 : parseFloat(value);
+                })
+                .reduce((totalSum, currentValue) => {
+                    return totalSum + currentValue;
+                });
         },
-
-
+        netPay() {
+            return this.grossPay - this.totalDeductions;
+        }
     },
     filters: {
         thousandSeparator(value) {

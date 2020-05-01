@@ -47,7 +47,7 @@
 <body class="vertical-layout vertical-menu-modern dark-layout 2-columns  navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="2-columns" data-layout="dark-layout">
 
     <!-- BEGIN: Header-->
-    <div class="content-overlay"></div>
+    <div class="content-overlay" id="app"></div>
     <div class="header-navbar-shadow"></div>
     <nav class="header-navbar navbar-expand-lg navbar navbar-with-menu floating-nav navbar-dark navbar-shadow">
         <div class="navbar-wrapper">

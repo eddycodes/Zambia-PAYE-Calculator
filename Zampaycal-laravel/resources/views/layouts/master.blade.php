@@ -182,6 +182,9 @@
                 <li class=" nav-item"><a href="/html/ltr/vertical-menu-template-dark/index.html">
                     <i class="feather icon-settings"></i><span class="menu-title" data-i18n="Account Settings">Management</span><span class="badge badge badge-warning badge-pill float-right">3</span></a>
                 </li>
+                <li class=" nav-item"><a href="/html/ltr/vertical-menu-template-dark/index.html">
+                    <i class="feather icon-settings"></i><span class="menu-title" data-i18n="Account Settings">Pay Calculator</span><span class="badge badge badge-warning badge-pill float-right">4</span></a>
+                </li>
             </ul>
         </div>
     </div>

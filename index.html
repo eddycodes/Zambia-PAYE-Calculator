@@ -131,7 +131,7 @@ new Vue({
                 });
         },
         napsa() {
-            const napsaCeiling = 1149.60;
+            const napsaCeiling = 1159.40;
             let napsa = 0.05 * (this.grossPay);
             if (napsa >= napsaCeiling) {
                 napsa = napsaCeiling;
@@ -144,8 +144,8 @@ new Vue({
         },
         tax() {
             let tax = 0;
-            if (this.grossPay <= 3300) return tax;
-            let remaining = this.grossPay - 3300;
+            if (this.grossPay <= 4000) return tax;
+            let remaining = this.grossPay - 4000;
             if (remaining > 800) {
                 remaining -= 800;
                 tax += 800 * 0.25;

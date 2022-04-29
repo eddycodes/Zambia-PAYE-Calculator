@@ -146,7 +146,7 @@
                     });
             },
             napsa() {
-                const napsaCeiling = 1159.40;
+                const napsaCeiling = 1221.80;
                 let napsa = 0.05 * (this.grossPay);
                 if (napsa >= napsaCeiling) {
                     napsa = napsaCeiling;
@@ -159,14 +159,17 @@
             },
             tax() {
                 let tax = 0;
-                if (this.grossPay <= 4000) return tax;
-                let remaining = this.grossPay - 4000;
-                if (remaining > 800) {
-                    remaining -= 800;
-                    tax += 800 * 0.25;
-                    if (remaining > 2100) {
-                        remaining -= 2100;
-                        tax += 2100 * 0.30;
+                let band1 = 4500;
+                let band2 = 300;
+                let band3 = 2100;
+                if (this.grossPay <= band1) return tax;
+                let remaining = this.grossPay - band1;
+                if (remaining > band2) {
+                    remaining -= band2;
+                    tax += band2 * 0.25;
+                    if (remaining > band3) {
+                        remaining -= band3;
+                        tax += band3 * 0.30;
                         if (remaining > 0) {
                             tax += remaining * 0.375;
                         }

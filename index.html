@@ -8,7 +8,8 @@
     <meta name="description" content="Zambian Salary and PAYE Calculator">
     <meta name="author" content="eddycodes">
     <title>Zambian Salaray and PAYE Calculator</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 
 <body>
@@ -23,166 +24,180 @@
     </section>
     <div id="app">
         <div class="container pt-3">
+
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group row">
-                        <label for="basic-pay" class="col-sm-4">Basic Pay</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="basicPay" v-model="basicPay">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Enter your salary details</h5>
+                            <div class="mb-3 row">
+                                <label for="basic-pay" class="col-sm-4">Basic Pay</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" ref="basicPay" v-model="basicPay">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="allowances" class="col-sm-4">Allowances</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" ref="allowances" v-model="allowances">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="bonuses" class="col-sm-4">Bonuses</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" ref="bonuses" v-model="bonuses">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="gratuity" class="col-sm-4">Gratuity/Leave Pay</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" ref="gratuity" v-model="gratuity">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="gratuity" class="col-sm-4">Loans and Advances</label>
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" ref="loans" v-model="loans">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="allowances" class="col-sm-4">Allowances</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="allowances" v-model="allowances">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="bonuses" class="col-sm-4">Bonuses</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="bonuses" v-model="bonuses">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="gratuity" class="col-sm-4">Gratuity/Leave Pay</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="gratuity" v-model="gratuity">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="gratuity" class="col-sm-4">Loans and Advances</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" ref="loans" v-model="loans">
-                        </div>
-                    </div>
+
                 </div>
                 <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p>Gross Pay</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <p>{{ grossPay | thousandSeparator }}</p>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Net pay breakdown</h5>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>Gross Pay</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>{{ grossPay | thousandSeparator }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>Napsa</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>{{ napsa | thousandSeparator }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>NHIS</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>{{ nhis | thousandSeparator }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>Tax</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>{{ tax | thousandSeparator }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>Total Deductions</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>{{ totalDeductions | thousandSeparator }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>Net Pay</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>{{ netPay | thousandSeparator }}</p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p>Napsa</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <p>{{ napsa | thousandSeparator }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p>NHIS</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <p>{{ nhis | thousandSeparator }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p>Tax</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <p>{{ tax | thousandSeparator }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p>Total Deductions</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <p>{{ totalDeductions | thousandSeparator }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p>Net Pay</p>
-                        </div>
-                        <div class="col-sm-8">
-                            <p>{{ netPay | thousandSeparator }}</p>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </body>
-<script src="js/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 <script>
-new Vue({
-    el: '#app',
-    data: {
-        basicPay: '',
-        allowances: '',
-        bonuses: '',
-        gratuity: '',
-        loans: ''
-    },
-    computed: {
-        grossPay() {
-            return [this.basicPay, this.allowances, this.bonuses, this.gratuity].map((value) => {
-                    return value = value == '' ? 0 : parseFloat(value);
-                })
-                .reduce((totalSum, currentValue) => {
-                    return totalSum + currentValue;
-                });
+    new Vue({
+        el: '#app',
+        data: {
+            basicPay: '',
+            allowances: '',
+            bonuses: '',
+            gratuity: '',
+            loans: ''
         },
-        napsa() {
-            const napsaCeiling = 1159.40;
-            let napsa = 0.05 * (this.grossPay);
-            if (napsa >= napsaCeiling) {
-                napsa = napsaCeiling;
-            }
-            return napsa;
-        },
-        nhis() {
-            let basicPay = this.basicPay === '' ? 0 : parseFloat(this.basicPay);
-            return basicPay * 0.01;
-        },
-        tax() {
-            let tax = 0;
-            if (this.grossPay <= 4000) return tax;
-            let remaining = this.grossPay - 4000;
-            if (remaining > 800) {
-                remaining -= 800;
-                tax += 800 * 0.25;
-                if (remaining > 2100) {
-                    remaining -= 2100;
-                    tax += 2100 * 0.30;
-                    if (remaining > 0) {
-                        tax += remaining * 0.375;
+        computed: {
+            grossPay() {
+                return [this.basicPay, this.allowances, this.bonuses, this.gratuity].map((value) => {
+                        return value = value == '' ? 0 : parseFloat(value);
+                    })
+                    .reduce((totalSum, currentValue) => {
+                        return totalSum + currentValue;
+                    });
+            },
+            napsa() {
+                const napsaCeiling = 1159.40;
+                let napsa = 0.05 * (this.grossPay);
+                if (napsa >= napsaCeiling) {
+                    napsa = napsaCeiling;
+                }
+                return napsa;
+            },
+            nhis() {
+                let basicPay = this.basicPay === '' ? 0 : parseFloat(this.basicPay);
+                return basicPay * 0.01;
+            },
+            tax() {
+                let tax = 0;
+                if (this.grossPay <= 4000) return tax;
+                let remaining = this.grossPay - 4000;
+                if (remaining > 800) {
+                    remaining -= 800;
+                    tax += 800 * 0.25;
+                    if (remaining > 2100) {
+                        remaining -= 2100;
+                        tax += 2100 * 0.30;
+                        if (remaining > 0) {
+                            tax += remaining * 0.375;
+                        }
+                    } else {
+                        tax += remaining * 0.30;
                     }
                 } else {
-                    tax += remaining * 0.30;
+                    tax = remaining * 0.25;
                 }
-            } else {
-                tax = remaining * 0.25;
+                return tax;
+            },
+            totalDeductions() {
+                return [this.napsa, this.tax, this.nhis, this.loans].map((value) => {
+                        return value = value == '' ? 0 : parseFloat(value);
+                    })
+                    .reduce((totalSum, currentValue) => {
+                        return totalSum + currentValue;
+                    });
+            },
+            netPay() {
+                return this.grossPay - this.totalDeductions;
             }
-            return tax;
         },
-        totalDeductions() {
-            return [this.napsa, this.tax, this.nhis, this.loans].map((value) => {
-                    return value = value == '' ? 0 : parseFloat(value);
-                })
-                .reduce((totalSum, currentValue) => {
-                    return totalSum + currentValue;
-                });
-        },
-        netPay() {
-            return this.grossPay - this.totalDeductions;
-        }
-    },
-    filters: {
-        thousandSeparator(value) {
-            if (value !== null) {
-                return value.toFixed(2).toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        filters: {
+            thousandSeparator(value) {
+                if (value !== null) {
+                    return value.toFixed(2).toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
             }
         }
-    }
-});
+    });
 </script>
 
 </html>

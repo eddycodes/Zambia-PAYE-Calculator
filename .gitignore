@@ -1,0 +1,1 @@
+Nothing should be ignored in this case, as the changes consist only of source files (.js, .json) and documentation files (.md, .html), with no build artifacts, dependencies, or temporary files present.

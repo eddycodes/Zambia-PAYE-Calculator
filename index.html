@@ -7,9 +7,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Zambian Salary and PAYE Calculator">
     <meta name="author" content="eddycodes">
-    <title>Zambian Salaray and PAYE Calculator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Zambian Salary and PAYE Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        .tax-band-info {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .deduction-row {
+            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+        }
+        .deduction-row:last-child {
+            border-bottom: none;
+        }
+        .net-pay-row {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            padding: 12px;
+            margin: -12px;
+        }
+        .config-status {
+            font-size: 0.75rem;
+            color: #28a745;
+        }
+        .tooltip-icon {
+            cursor: help;
+            color: #007bff;
+            margin-left: 5px;
+        }
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
 
 <body>
@@ -17,12 +47,13 @@
         <div class="container pt-3">
             <div class="row">
                 <div class="col-sm-12">
-                    <h1>Salary and PAYE Calculator</h1>
+                    <h1 x-text="appTitle"></h1>
+                    <small class="config-status" x-show="configLoaded" x-cloak>✓ Configuration loaded</small>
                 </div>
             </div>
         </div>
     </section>
-    <div id="app">
+    <div id="app" x-data="salaryCalculator()" x-init="init()">
         <div class="container pt-3">
 
             <div class="row">
@@ -30,36 +61,19 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Enter your salary details</h5>
-                            <div class="mb-3 row">
-                                <label for="basic-pay" class="col-sm-4">Basic Pay</label>
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control" ref="basicPay" v-model="basicPay">
+                            <template x-for="field in inputFields" :key="field.id">
+                                <div class="mb-3 row">
+                                    <label :for="field.id" class="col-sm-4" x-text="field.label"></label>
+                                    <div class="col-sm-8">
+                                        <input type="number" 
+                                               :id="field.id"
+                                               class="form-control" 
+                                               :placeholder="field.placeholder"
+                                               :required="field.required"
+                                               x-model.number="formData[field.id]">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="allowances" class="col-sm-4">Allowances</label>
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control" ref="allowances" v-model="allowances">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="bonuses" class="col-sm-4">Bonuses</label>
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control" ref="bonuses" v-model="bonuses">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="gratuity" class="col-sm-4">Gratuity/Leave Pay</label>
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control" ref="gratuity" v-model="gratuity">
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="gratuity" class="col-sm-4">Loans and Advances</label>
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control" ref="loans" v-model="loans">
-                                </div>
-                            </div>
+                            </template>
                         </div>
                     </div>
 
@@ -68,55 +82,30 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Net pay breakdown</h5>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Gross Pay</p>
+                            <template x-for="field in outputFields" :key="field.id">
+                                <div class="row deduction-row">
+                                    <div class="col-sm-6">
+                                        <p x-text="field.label">
+                                            <span x-show="showDescriptions && getDescription(field.id)" 
+                                                  class="tooltip-icon" 
+                                                  :title="getDescription(field.id)" 
+                                                  x-text="'ⓘ'"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p x-text="formatCurrency(getFieldValue(field.id))"></p>
+                                    </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <p>{{ grossPay | thousandSeparator }}</p>
-                                </div>
+                            </template>
+                            
+                            <div x-show="showTaxBands" class="mt-3" x-cloak>
+                                <h6>Tax Bands</h6>
+                                <ul class="list-unstyled tax-band-info">
+                                    <template x-for="(band, index) in taxBands" :key="index">
+                                        <li x-text="formatTaxBand(band)"></li>
+                                    </template>
+                                </ul>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Napsa</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p>{{ napsa | thousandSeparator }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>NHIS</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p>{{ nhis | thousandSeparator }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Tax</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p>{{ tax | thousandSeparator }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Total Deductions</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p>{{ totalDeductions | thousandSeparator }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p>Net Pay</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p>{{ netPay | thousandSeparator }}</p>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
 
@@ -125,82 +114,205 @@
         </div>
     </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<script src="taxLogic.js"></script>
 <script>
-    new Vue({
-        el: '#app',
-        data: {
-            basicPay: '',
-            allowances: '',
-            bonuses: '',
-            gratuity: '',
-            loans: ''
-        },
-        computed: {
-            grossPay() {
-                return [this.basicPay, this.allowances, this.bonuses, this.gratuity].map((value) => {
-                        return value = value == '' ? 0 : parseFloat(value);
-                    })
-                    .reduce((totalSum, currentValue) => {
-                        return totalSum + currentValue;
-                    });
+    function salaryCalculator() {
+        return {
+            formData: {
+                basicPay: '',
+                allowances: '',
+                bonuses: '',
+                gratuity: '',
+                loans: ''
             },
-            napsa() {
-                const napsaCeiling = 1221.80;
-                let napsa = 0.05 * (this.grossPay);
-                if (napsa >= napsaCeiling) {
-                    napsa = napsaCeiling;
-                }
-                return napsa;
+            config: null,
+            configLoaded: false,
+            
+            get appTitle() {
+                return this.config?.ui?.title || 'Zambian Salary and PAYE Calculator';
             },
-            nhis() {
-                let basicPay = this.basicPay === '' ? 0 : parseFloat(this.basicPay);
-                return basicPay * 0.01;
+            
+            get inputFields() {
+                return this.config?.ui?.inputFields || [];
             },
-            tax() {
+            
+            get outputFields() {
+                return this.config?.ui?.outputFields || [];
+            },
+            
+            get showDescriptions() {
+                return this.config?.ui?.showDescriptions ?? true;
+            },
+            
+            get showTaxBands() {
+                return this.showDescriptions && this.config?.tax?.enabled;
+            },
+            
+            get taxBands() {
+                return this.config?.tax?.bands || [];
+            },
+            
+            get basicPay() {
+                return this.formData.basicPay === '' ? 0 : parseFloat(this.formData.basicPay);
+            },
+            
+            get grossPay() {
+                return ['basicPay', 'allowances', 'bonuses', 'gratuity']
+                    .map(field => this.formData[field] === '' ? 0 : parseFloat(this.formData[field]))
+                    .reduce((sum, val) => sum + val, 0);
+            },
+            
+            get napsa() {
+                return this.calculateNAPSA(this.grossPay, this.config);
+            },
+            
+            get nhis() {
+                return this.calculateNHIS(this.basicPay, this.config);
+            },
+            
+            get taxableIncome() {
+                return this.grossPay;
+            },
+            
+            get tax() {
+                return this.calculateTax(this.taxableIncome, this.config);
+            },
+            
+            get totalDeductions() {
+                return this.napsa + this.tax + this.nhis + (this.formData.loans === '' ? 0 : parseFloat(this.formData.loans));
+            },
+            
+            get netPay() {
+                return this.grossPay - this.totalDeductions;
+            },
+            
+            init() {
+                this.loadConfig();
+            },
+            
+            calculateNAPSA(grossPay, config) {
+                if (!config?.napsa?.enabled) return 0;
+                const napsa = grossPay * config.napsa.rate;
+                return Math.min(napsa, config.napsa.ceiling);
+            },
+            
+            calculateNHIS(basicPay, config) {
+                if (!config?.nhis?.enabled) return 0;
+                return basicPay * config.nhis.rate;
+            },
+            
+            calculateTax(taxableIncome, config) {
+                if (!config?.tax?.enabled) return 0;
+                
                 let tax = 0;
-                let band1 = 4500;
-                let band2 = 300;
-                let band3 = 2100;
-                if (this.grossPay <= band1) return tax;
-                let remaining = this.grossPay - band1;
-                if (remaining > band2) {
-                    remaining -= band2;
-                    tax += band2 * 0.25;
-                    if (remaining > band3) {
-                        remaining -= band3;
-                        tax += band3 * 0.30;
-                        if (remaining > 0) {
-                            tax += remaining * 0.375;
-                        }
-                    } else {
-                        tax += remaining * 0.30;
+                let remaining = taxableIncome;
+                
+                for (const band of config.tax.bands) {
+                    if (band.threshold === null) {
+                        // Last band - apply to all remaining
+                        tax += remaining * band.rate;
+                        break;
                     }
-                } else {
-                    tax = remaining * 0.25;
+                    
+                    if (remaining <= 0) break;
+                    
+                    const taxableInBand = Math.min(remaining, band.threshold);
+                    tax += taxableInBand * band.rate;
+                    remaining -= band.threshold;
                 }
+                
                 return tax;
             },
-            totalDeductions() {
-                return [this.napsa, this.tax, this.nhis, this.loans].map((value) => {
-                        return value = value == '' ? 0 : parseFloat(value);
-                    })
-                    .reduce((totalSum, currentValue) => {
-                        return totalSum + currentValue;
-                    });
+            
+            getDescription(fieldId) {
+                const descriptions = {
+                    napsa: this.config?.napsa?.description,
+                    nhis: this.config?.nhis?.description,
+                    tax: 'Pay As You Earn (PAYE) income tax'
+                };
+                return descriptions[fieldId] || null;
             },
-            netPay() {
-                return this.grossPay - this.totalDeductions;
-            }
-        },
-        filters: {
-            thousandSeparator(value) {
-                if (value !== null) {
-                    return value.toFixed(2).toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            
+            getFieldValue(fieldId) {
+                const values = {
+                    grossPay: this.grossPay,
+                    napsa: this.napsa,
+                    nhis: this.nhis,
+                    tax: this.tax,
+                    totalDeductions: this.totalDeductions,
+                    netPay: this.netPay
+                };
+                return values[fieldId] || 0;
+            },
+            
+            formatTaxBand(band) {
+                if (band.threshold === null) {
+                    return `Remaining: ${(band.rate * 100).toFixed(1)}%`;
                 }
+                return `First ${band.threshold.toLocaleString()}: ${(band.rate * 100).toFixed(1)}% - ${band.description}`;
+            },
+            
+            formatCurrency(value) {
+                if (value !== null && value !== undefined) {
+                    return Number(value).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+                return '0.00';
+            },
+            
+            loadConfig() {
+                fetch('config.json')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Config not found');
+                        return response.json();
+                    })
+                    .then(config => {
+                        this.config = config;
+                        this.configLoaded = true;
+                        console.log('Configuration loaded successfully');
+                    })
+                    .catch(error => {
+                        console.log('Using default configuration:', error.message);
+                        // Set default config if loading fails
+                        this.config = {
+                            currency: { symbol: 'ZMW', locale: 'en-ZM', decimalPlaces: 2 },
+                            napsa: { enabled: true, rate: 0.05, ceiling: 1221.80, description: 'National Pension Scheme Authority' },
+                            nhis: { enabled: true, rate: 0.01, applyOn: 'basicPay', description: 'National Health Insurance Scheme' },
+                            tax: {
+                                enabled: true,
+                                bands: [
+                                    { threshold: 4500, rate: 0, description: 'Tax-free band' },
+                                    { threshold: 300, rate: 0.25, description: 'First taxable band' },
+                                    { threshold: 2100, rate: 0.30, description: 'Second taxable band' },
+                                    { threshold: null, rate: 0.375, description: 'Remaining balance' }
+                                ],
+                                calculationMethod: 'progressive'
+                            },
+                            ui: {
+                                title: 'Zambian Salary and PAYE Calculator',
+                                showDescriptions: true,
+                                theme: 'light',
+                                inputFields: [
+                                    { id: 'basicPay', label: 'Basic Pay', placeholder: 'Enter basic pay', required: true },
+                                    { id: 'allowances', label: 'Allowances', placeholder: 'Enter allowances', required: false },
+                                    { id: 'bonuses', label: 'Bonuses', placeholder: 'Enter bonuses', required: false },
+                                    { id: 'gratuity', label: 'Gratuity/Leave Pay', placeholder: 'Enter gratuity/leave pay', required: false },
+                                    { id: 'loans', label: 'Loans and Advances', placeholder: 'Enter loans and advances', required: false }
+                                ],
+                                outputFields: [
+                                    { id: 'grossPay', label: 'Gross Pay' },
+                                    { id: 'napsa', label: 'NAPSA' },
+                                    { id: 'nhis', label: 'NHIS' },
+                                    { id: 'tax', label: 'PAYE Tax' },
+                                    { id: 'totalDeductions', label: 'Total Deductions' },
+                                    { id: 'netPay', label: 'Net Pay' }
+                                ]
+                            }
+                        };
+                        this.configLoaded = true;
+                    });
             }
         }
-    });
+    }
 </script>
 
 </html>

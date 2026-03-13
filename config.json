@@ -1,0 +1,108 @@
+{
+  "currency": {
+    "symbol": "ZMW",
+    "locale": "en-ZM",
+    "decimalPlaces": 2
+  },
+  "napsa": {
+    "enabled": true,
+    "rate": 0.05,
+    "ceiling": 1221.80,
+    "description": "National Pension Scheme Authority"
+  },
+  "nhis": {
+    "enabled": true,
+    "rate": 0.01,
+    "applyOn": "basicPay",
+    "description": "National Health Insurance Scheme"
+  },
+  "tax": {
+    "enabled": true,
+    "bands": [
+      {
+        "threshold": 4500,
+        "rate": 0,
+        "description": "Tax-free band"
+      },
+      {
+        "threshold": 300,
+        "rate": 0.25,
+        "description": "First taxable band"
+      },
+      {
+        "threshold": 2100,
+        "rate": 0.30,
+        "description": "Second taxable band"
+      },
+      {
+        "threshold": null,
+        "rate": 0.375,
+        "description": "Remaining balance"
+      }
+    ],
+    "calculationMethod": "progressive"
+  },
+  "ui": {
+    "title": "Zambian Salary and PAYE Calculator",
+    "showDescriptions": true,
+    "theme": "light",
+    "inputFields": [
+      {
+        "id": "basicPay",
+        "label": "Basic Pay",
+        "placeholder": "Enter basic pay",
+        "required": true
+      },
+      {
+        "id": "allowances",
+        "label": "Allowances",
+        "placeholder": "Enter allowances",
+        "required": false
+      },
+      {
+        "id": "bonuses",
+        "label": "Bonuses",
+        "placeholder": "Enter bonuses",
+        "required": false
+      },
+      {
+        "id": "gratuity",
+        "label": "Gratuity/Leave Pay",
+        "placeholder": "Enter gratuity/leave pay",
+        "required": false
+      },
+      {
+        "id": "loans",
+        "label": "Loans and Advances",
+        "placeholder": "Enter loans and advances",
+        "required": false
+      }
+    ],
+    "outputFields": [
+      {
+        "id": "grossPay",
+        "label": "Gross Pay"
+      },
+      {
+        "id": "napsa",
+        "label": "NAPSA"
+      },
+      {
+        "id": "nhis",
+        "label": "NHIS"
+      },
+      {
+        "id": "tax",
+        "label": "PAYE Tax"
+      },
+      {
+        "id": "totalDeductions",
+        "label": "Total Deductions"
+      },
+      {
+        "id": "netPay",
+        "label": "Net Pay"
+      }
+    ]
+  }
+}
